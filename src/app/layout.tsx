@@ -90,7 +90,6 @@ export const metadata: Metadata = {
     },
   },
   manifest: "/site.webmanifest",
-  themeColor: "#0a0a0a",
   category: "technology",
 };
 
