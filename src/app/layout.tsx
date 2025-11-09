@@ -7,6 +7,7 @@ import MarqueeSection from "@/components/marqueeSection/MarqueeSection";
 import ReactLenis from "lenis/react";
 import CustomCursor from "@/components/CustomCursor";
 import TabTitleChanger from "@/components/TabTitleChanger";
+import BackToTop from "@/components/BackToTop";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -108,6 +109,7 @@ export default function RootLayout({
           {children}
           <MarqueeSection />
           <Footer />
+          <BackToTop />
         </ReactLenis>
       </body>
     </html>

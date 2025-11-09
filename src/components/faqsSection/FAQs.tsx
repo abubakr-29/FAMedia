@@ -155,9 +155,9 @@ export default function FAQs() {
     >
       <div ref={titleRef} className="text-center mb-12 opacity-0">
         <h2 className="font-antonio text-4xl lg:text-5xl text-stone-200">
-          Frequently Asked <span className="text-[#54d265]">Questions</span>
+          FA<span className="text-[#54d265]">Qs</span>
         </h2>
-        <p className="mt-4 text-stone-300 text-lg">
+        <p className="mt-4 text-stone-300 text-base md:text-lg">
           Everything you need to know about our services
         </p>
       </div>
@@ -172,7 +172,7 @@ export default function FAQs() {
               onClick={() => toggleFAQ(faq.id, index)}
               className="w-full text-left py-6 px-6 flex items-center justify-between gap-4 group cursor-pointer"
             >
-              <span className="text-stone-300 text-lg font-medium group-hover:text-white transition-colors leading-relaxed">
+              <span className="text-stone-300 text-sm md:text-base font-medium group-hover:text-white transition-colors leading-relaxed">
                 {faq.question}
               </span>
               <div
@@ -202,7 +202,7 @@ export default function FAQs() {
               }}
               className="overflow-hidden h-0 opacity-0"
             >
-              <div className="px-6 pb-6 text-stone-400 leading-relaxed">
+              <div className="px-6 pb-6 text-sm md:text-base text-stone-400 leading-relaxed">
                 {faq.answer}
               </div>
             </div>

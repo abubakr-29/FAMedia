@@ -105,7 +105,7 @@ export default function Contact() {
           </h2>
           <p
             ref={subtitleRef}
-            className="text-stone-300 text-lg max-w-2xl mx-auto opacity-0"
+            className="text-stone-300 text-base md:text-lg max-w-2xl mx-auto opacity-0"
           >
             Got a project or idea in mind? Drop a message — we&apos;re just a
             few clicks away!
