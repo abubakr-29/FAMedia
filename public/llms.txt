@@ -1,0 +1,47 @@
+# ======================================================
+#  FA Media - LLMs Usage Policy
+#  Version: 1.1  |  Updated: 2025-11-09
+#  URL: https://famedia.co.in/llms.txt
+# ======================================================
+
+#  Description:
+#  This document defines how Large Language Models (LLMs)
+#  and AI crawlers may interact with FA Media’s public content.
+#  It functions like robots.txt, but for AI systems.
+# ======================================================
+
+#  List of known and anticipated AI User-Agents
+User-agent: GPT-5
+User-agent: GPT-4
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: Claude
+User-agent: ClaudeBot
+User-agent: Gemini
+User-agent: LLaMA
+User-agent: MetaAI
+User-agent: PerplexityBot
+User-agent: Copilot
+User-agent: Mistral
+User-agent: Command-R
+
+#  Allow public pages for inference (reading only)
+Allow: /
+
+#  Disallow model training or dataset creation
+Train: disallow
+
+#  Permit inference / summarization (read-only access)
+Inference: allow
+
+#  Restricted directories
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /private/
+
+#  Contact & Legal
+Contact: support@fa-media.co.in
+Copyright: © 2025 FA Media. All rights reserved.
+License: Content may not be used for training, fine-tuning, or dataset creation without explicit written consent.
+# ======================================================
