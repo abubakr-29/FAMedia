@@ -37,7 +37,7 @@ export default function AboutUsLeft() {
         subtitleRef.current,
         { autoAlpha: 0, x: -80 },
         { autoAlpha: 1, x: 0, duration: 0.6, ease: "power2.out" },
-        0.1
+        0.3
       );
     }
   });

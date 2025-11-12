@@ -10,38 +10,33 @@ gsap.registerPlugin(useGSAP);
 const CustomCursor = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   const mousePos = useRef({ x: 0, y: 0 });
-  const [isMobile, setIsMobile] = useState(true); // Default to true to avoid flash
+  const [isMobile, setIsMobile] = useState(true);
 
-  // Check if device is mobile
   useEffect(() => {
     const checkMobile = () => {
       const mobile =
         /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
-        window.innerWidth < 1024; // Also check screen width
+        window.innerWidth < 1024;
       setIsMobile(mobile);
     };
 
     checkMobile();
-
-    // Recheck on resize
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Handle cursor animation with useGSAP
   useGSAP(() => {
     if (isMobile) return;
 
     const cursor = cursorRef.current;
     if (!cursor) return;
 
-    // Track mouse movement
     const handleMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
-      const rect = cursor.getBoundingClientRect();
 
       // Check if cursor has text (is in badge mode)
       const hasText = cursor.innerHTML.length > 0;
+      const rect = cursor.getBoundingClientRect();
 
       gsap.to(cursor, {
         x: e.clientX - rect.width / 2,
@@ -51,44 +46,55 @@ const CustomCursor = () => {
       });
     };
 
-    // Handle cursor interactions with elements
     const handleMouseEnter = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-
-      // Ensure target is an HTMLElement
       if (!target || !(target instanceof HTMLElement)) return;
 
-      // Check if element has data-cursor attribute
       const cursorText = target.getAttribute("data-cursor-text");
 
       if (cursorText) {
+        // Set text immediately but invisible to measure size
         cursor.innerHTML = cursorText;
-        gsap.to(cursor, {
-          scale: 1,
-          backgroundColor: "#54d265",
-          color: "#000",
-          padding: "4px 10px",
-          borderRadius: "18px",
-          height: "auto",
-          width: "auto",
-          duration: 0.3,
-          ease: "power2.out",
-          onComplete: () => {
-            // After animation completes, get the actual size and reposition
-            const rect = cursor.getBoundingClientRect();
-            gsap.set(cursor, {
-              x: e.clientX - rect.width / 2,
-              y: e.clientY - rect.height / 2 - 20, // 20px above cursor
-            });
-          },
+        cursor.style.visibility = "hidden";
+        cursor.style.padding = "4px 10px";
+        cursor.style.height = "auto";
+        cursor.style.width = "auto";
+        cursor.style.borderRadius = "18px";
+
+        // Force layout recalculation and get the new dimensions
+        void cursor.offsetHeight;
+        const rect = cursor.getBoundingClientRect();
+
+        // Position cursor at the final location before making it visible
+        gsap.set(cursor, {
+          x: mousePos.current.x - rect.width / 2,
+          y: mousePos.current.y - rect.height / 2 - 20,
         });
+
+        // Make visible again
+        cursor.style.visibility = "visible";
+
+        // Now animate the appearance
+        gsap.fromTo(
+          cursor,
+          {
+            scale: 0.5,
+            opacity: 0,
+          },
+          {
+            scale: 1,
+            opacity: 1,
+            backgroundColor: "#54d265",
+            color: "#000",
+            duration: 0.3,
+            ease: "power2.out",
+          }
+        );
       }
     };
 
     const handleMouseLeave = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-
-      // Ensure target is an HTMLElement before calling hasAttribute
       if (!target || !(target instanceof HTMLElement)) return;
 
       if (target.hasAttribute("data-cursor-text")) {
@@ -107,12 +113,10 @@ const CustomCursor = () => {
       }
     };
 
-    // Add event listeners
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseenter", handleMouseEnter, true);
     document.addEventListener("mouseleave", handleMouseLeave, true);
 
-    // Cleanup is handled automatically by useGSAP
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseenter", handleMouseEnter, true);
@@ -120,7 +124,6 @@ const CustomCursor = () => {
     };
   }, [isMobile]);
 
-  // Don't render anything on mobile
   if (isMobile) return null;
 
   return (

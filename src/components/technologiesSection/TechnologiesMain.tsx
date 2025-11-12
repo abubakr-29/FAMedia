@@ -102,11 +102,11 @@ export default function TechnologiesMain() {
           iconsContainerRef.current,
           {
             autoAlpha: 0,
-            x: -100,
+            scale: 0.9,
           },
           {
             autoAlpha: 1,
-            x: 0,
+            scale: 1,
             duration: 1.5,
             ease: "power2.out",
             scrollTrigger: {

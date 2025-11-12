@@ -19,7 +19,7 @@ export default function TabTitleChanger() {
           intervalRef.current = setInterval(() => {
             document.title = messages[index];
             index = (index + 1) % messages.length;
-          }, 1500);
+          }, 2000);
         } else {
           if (intervalRef.current) clearInterval(intervalRef.current);
           document.title = originalTitle.current;

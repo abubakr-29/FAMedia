@@ -107,7 +107,7 @@ export default function SubHero() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top 85%",
-          once: true, // only animate once
+          once: true,
           onEnter: () => setTriggered(true),
         },
       });
