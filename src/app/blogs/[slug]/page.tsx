@@ -98,7 +98,7 @@ export async function generateMetadata({
 export default async function BlogPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
   const blog = await client.fetch<BlogPost>(BLOGS_QUERY, await params, options);
 
