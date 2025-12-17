@@ -46,10 +46,16 @@ const options = { next: { revalidate: 30 } };
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
-}): Promise<Metadata> {
+  params: { slug?: string };
+}) {
+  if (!params.slug) {
+    return {
+      title: "Blog | FA Media",
+    };
+  }
+
   const blog = await client.fetch(
-    `*[_type == "blog" && slug.current == $slug] {
+    `*[_type == 'blog' && slug.current == $slug] {
       _id,
       title,
       excerpt,
