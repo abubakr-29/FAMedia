@@ -15,13 +15,28 @@ import TestimonialsMain from "@/components/testimonialsSection/TestimonialsMain"
 import WhyChooseUsMain from "@/components/whyChooseUsSection/WhyChooseUsMain";
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
+  // Initialize state based on sessionStorage (only runs once on mount)
+  const [showPreloader, setShowPreloader] = useState(() => {
+    // This function only runs once during initial render
+    if (typeof window !== "undefined") {
+      return !sessionStorage.getItem("preloaderShown");
+    }
+    return true; // Default to true on server-side
+  });
+
+  const handlePreloaderComplete = () => {
+    // Mark preloader as shown in this session
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("preloaderShown", "true");
+    }
+    setShowPreloader(false);
+  };
 
   return (
     <>
-      {isLoading && <Preloader onComplete={() => setIsLoading(false)} />}
+      {showPreloader && <Preloader onComplete={handlePreloaderComplete} />}
 
-      {!isLoading && (
+      {!showPreloader && (
         <main>
           <Hero />
           <div className="container mx-auto overflow-hidden">

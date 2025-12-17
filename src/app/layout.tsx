@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   authors: [{ name: "FA Media", url: "https://famedia.co.in" }],
   creator: "FA Media",
   publisher: "FA Media",
-  metadataBase: new URL("https://fa-media.co.in"),
+  metadataBase: new URL("https://famedia.co.in"),
 
   alternates: {
     canonical: "https://famedia.co.in",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     siteName: "FA Media",
     images: [
       {
-        url: "/FAMediaLogo.svg",
+        url: "/famedialogo.jpeg",
         width: 1200,
         height: 630,
         alt: "FA Media - Web Development & Automation Agency",
@@ -80,7 +80,7 @@ export const metadata: Metadata = {
     description:
       "Building high-performance, modern websites and automation systems for businesses that want to scale.",
     creator: "@fa_media",
-    images: ["/FAMediaLogo.svg"],
+    images: ["/famedialogo.jpeg"],
   },
   robots: {
     index: true,
