@@ -49,12 +49,13 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const blog = await client.fetch(
-    `*[_type == "blog" && slug.current == $slug][0]{
+    `*[_type == "blog" && slug.current == $slug] {
+      _id,
       title,
       excerpt,
       "slug": slug.current,
       "image": titleImage.asset->url
-    }`,
+    }[0]`,
     { slug: params.slug }
   );
 
@@ -98,7 +99,7 @@ export async function generateMetadata({
 export default async function BlogPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
   const blog = await client.fetch<BlogPost>(BLOGS_QUERY, await params, options);
 
