@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import Image from "next/image";
+import { AuthorStatus } from "@/components/AuthorStatus";
 
 interface BlogPost extends SanityDocument {
   _id: string;
@@ -46,9 +47,11 @@ const options = { next: { revalidate: 30 } };
 export async function generateMetadata({
   params,
 }: {
-  params: { slug?: string };
-}) {
-  if (!params.slug) {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const resolvedParams = await params;
+
+  if (!resolvedParams.slug) {
     return {
       title: "Blog | FA Media",
     };
@@ -62,7 +65,7 @@ export async function generateMetadata({
       "slug": slug.current,
       "image": titleImage.asset->url
     }[0]`,
-    { slug: params.slug }
+    { slug: resolvedParams.slug } // ✅ Use resolvedParams
   );
 
   if (!blog) {
@@ -133,17 +136,6 @@ export default async function BlogPage({
       .join(" ");
   };
 
-  const isOnlineIST = (): boolean => {
-    const hours = new Date().toLocaleString("en-US", {
-      timeZone: "Asia/Kolkata",
-      hour: "numeric",
-      hour12: false,
-    });
-
-    const currentHour = parseInt(hours);
-    return currentHour >= 9 && currentHour < 21;
-  };
-
   return (
     <section className="max-w-6xl mx-auto px-4 md:px-8 pt-30 pb-20 font-inter">
       <Link
@@ -203,17 +195,7 @@ export default async function BlogPage({
                 <span className="text-sm text-white">
                   {capitalizeName(blog.author)}
                 </span>
-                {isOnlineIST() ? (
-                  <span
-                    className="w-2 h-2 rounded-full bg-green-400 animate-pulse"
-                    title="Online"
-                  ></span>
-                ) : (
-                  <span
-                    className="w-2 h-2 rounded-full bg-gray-600"
-                    title="Offline"
-                  ></span>
-                )}
+                <AuthorStatus />
               </div>
             </div>
 

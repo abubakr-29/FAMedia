@@ -41,7 +41,7 @@ const CustomCursor = () => {
       gsap.to(cursor, {
         x: e.clientX - rect.width / 2,
         y: hasText ? e.clientY - rect.height / 2 - 20 : e.clientY - 6,
-        duration: 0.6,
+        duration: 0.7,
         ease: "power2.out",
       });
     };
@@ -129,7 +129,7 @@ const CustomCursor = () => {
   return (
     <div
       ref={cursorRef}
-      className="fixed font-inter h-3 w-3 bg-[#54d265] rounded-full pointer-events-none flex items-center justify-center text-center whitespace-nowrap uppercase"
+      className="fixed font-inter h-2.5 w-2.5 bg-[#54d265] rounded-full pointer-events-none flex items-center justify-center text-center whitespace-nowrap uppercase"
       style={{
         left: 0,
         top: 0,
