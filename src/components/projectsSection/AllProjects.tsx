@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
@@ -7,8 +8,10 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { client } from "@/sanity/client";
 
 interface Project {
+  _id: string;
   title: string;
   subtitle: string;
   image: string;
@@ -17,110 +20,90 @@ interface Project {
   link: string;
 }
 
-const PROJECTS: Project[] = [
-  {
-    title: "The Combat Gym",
-    subtitle: "Modern Landing Page",
-    image: "/projects/project1.webp",
-    description:
-      "A high-converting Next.js landing page built under FA Media to elevate The Combat Gym’s online presence.",
-    technologies: ["Next.js", "React", "Tailwind CSS", "Framer Motion"],
-    link: "https://thecombatgym.in/",
-  },
-  {
-    title: "Cyanide",
-    subtitle: "Full-Stack E-Commerce Platform",
-    image: "/projects/project8.webp",
-    description:
-      "A dynamic e-commerce platform for Cyanide with PayPal payments and smooth product management.",
-    technologies: [
-      "React",
-      "Tailwind CSS",
-      "Node.js",
-      "Express.js",
-      "MongoDB",
-      "PayPal API",
-    ],
-    link: "https://e-commerce-ns8f.vercel.app/",
-  },
-  {
-    title: "MH Interiors",
-    subtitle: "Interior Design Portfolio Website",
-    image: "/projects/project7.webp",
-    description:
-      "A stylish portfolio for MH Interiors featuring animations and Google Sheets automation via FA Media.",
-    technologies: [
-      "React.js",
-      "Tailwind CSS",
-      "Framer Motion",
-      "Google Sheets API",
-      "Google Cloud Console",
-    ],
-    link: "https://mh-interiors.in/",
-  },
-  {
-    title: "The Combat Gym",
-    subtitle: "Gym Management Web App",
-    image: "/projects/project5.webp",
-    description:
-      "A full-stack app for The Combat Gym to manage students, data, and communication efficiently.",
-    technologies: [
-      "EJS",
-      "CSS3",
-      "Bootstrap",
-      "Node.js",
-      "Express.js",
-      "PostgreSQL",
-    ],
-    link: "https://the-combat-gym.onrender.com/",
-  },
-  {
-    title: "FurryFriends",
-    subtitle: "Pet E-Commerce Platform",
-    image: "/projects/project3.webp",
-    description:
-      "An engaging pet e-commerce site for browsing and purchasing purebred dogs securely.",
-    technologies: [
-      "Node.js",
-      "Express.js",
-      "PostgreSQL",
-      "Stripe API",
-      "OAuth",
-      "HTML5",
-      "CSS3",
-    ],
-    link: "https://furry-friends-91t1.onrender.com/",
-  },
-  {
-    title: "Abu Bakr Ahmed",
-    subtitle: "Developer Portfolio",
-    image: "/projects/project6.webp",
-    description:
-      "A personal portfolio showcasing projects, skills, and experience as a full-stack developer.",
-    technologies: ["ReactJs", "Framer Motion", "TailwindCSS"],
-    link: "https://abu-bakr-ahmed.vercel.app/",
-  },
-  {
-    title: "Local Roofing",
-    subtitle: "Service-Based Website",
-    image: "/projects/project4.webp",
-    description:
-      "A clean static website for a roofing service, highlighting offerings and contact details.",
-    technologies: ["HTML5", "CSS3", "JavaScript", "GSAP"],
-    link: "https://localroofinghandyman.com/",
-  },
-  {
-    title: "Faraz Khan",
-    subtitle: "Copywriter & Designer Portfolio",
-    image: "/projects/project2.webp",
-    description:
-      "A professional portfolio showcasing Faraz Khan's work in copywriting, design, and branding.",
-    technologies: ["HTML5", "CSS5", "JavaScript", "Bootstrap"],
-    link: "https://farazkhan.onrender.com/",
-  },
-];
+const PROJECTS_QUERY = `*[_type == "project"] | order(coalesce(order, 9999) asc, _createdAt desc) {
+  _id,
+  title,
+  subtitle,
+  "image": image.asset->url,
+  description,
+  technologies,
+  link
+}`;
+
+const options = { next: { revalidate: 30 } };
 
 export default function AllProjects() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchProjects = async () => {
+      try {
+        const data = await client.fetch<Project[]>(PROJECTS_QUERY, {}, options);
+        if (isMounted) {
+          setProjects(data ?? []);
+          setLoadError(false);
+        }
+      } catch {
+        if (isMounted) {
+          setProjects([]);
+          setLoadError(true);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchProjects();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="font-inter w-full max-w-[1400px] mx-auto px-4 relative">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div
+              key={index}
+              className="h-[600px] sm:h-[620px] bg-stone-950 rounded-xl border border-stone-800 p-4 sm:p-6 animate-pulse"
+            >
+              <div className="h-60 w-full rounded-lg bg-stone-900" />
+              <div className="mt-6 h-6 w-3/4 rounded bg-stone-900" />
+              <div className="mt-3 h-4 w-1/2 rounded bg-stone-900" />
+              <div className="mt-4 h-4 w-full rounded bg-stone-900" />
+              <div className="mt-2 h-4 w-11/12 rounded bg-stone-900" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!projects.length) {
+    return (
+      <div className="font-inter w-full max-w-[1400px] mx-auto px-4">
+        <div className="bg-stone-950 border border-stone-800 rounded-xl py-16 px-6 text-center">
+          <h3 className="text-stone-200 text-2xl font-semibold mb-3">
+            No projects available
+          </h3>
+          <p className="text-stone-400 max-w-xl mx-auto">
+            {loadError
+              ? "We could not load projects from Sanity right now. Please try again shortly."
+              : "Your project section is connected to Sanity, but no project documents are published yet."}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="font-inter w-full max-w-[1400px] mx-auto px-4 relative">
       <button
@@ -159,8 +142,12 @@ export default function AllProjects() {
       </button>
       <Swiper
         modules={[Pagination, Autoplay, Navigation]}
-        loop={true}
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        loop={projects.length > 1}
+        autoplay={
+          projects.length > 1
+            ? { delay: 3000, disableOnInteraction: false }
+            : false
+        }
         pagination={{ el: ".custom-swiper-pagination", clickable: true }}
         navigation={{
           prevEl: ".swiper-button-prev-custom",
@@ -173,17 +160,23 @@ export default function AllProjects() {
           1024: { slidesPerView: 3, spaceBetween: 24 },
         }}
       >
-        {PROJECTS.map((project, index) => (
-          <SwiperSlide key={index}>
+        {projects.map((project) => (
+          <SwiperSlide key={project._id}>
             <div className="flex flex-col h-[600px] sm:h-[620px] bg-stone-950 rounded-xl border border-stone-700 p-4 sm:p-6 shadow-lg">
               <div className="w-full flex justify-center mb-6">
-                <Image
-                  src={project.image}
-                  width={300}
-                  height={300}
-                  alt={project.title}
-                  className="rounded-lg object-cover w-full"
-                />
+                {project.image ? (
+                  <Image
+                    src={project.image}
+                    width={300}
+                    height={300}
+                    alt={project.title}
+                    className="rounded-lg object-cover w-full"
+                  />
+                ) : (
+                  <div className="rounded-lg bg-stone-900 w-full h-[300px] flex items-center justify-center text-stone-500 text-sm">
+                    No image available
+                  </div>
+                )}
               </div>
               <div className="grow">
                 <h3 className="font-bold text-lg text-stone-300 mb-2">
@@ -197,7 +190,7 @@ export default function AllProjects() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-2 mb-4">
-                {project.technologies.map((tech, index) => (
+                {project.technologies?.map((tech, index) => (
                   <span
                     className="rounded bg-stone-900 text-stone-300 p-1.5 text-xs sm:text-sm font-medium"
                     key={index}

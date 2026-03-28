@@ -17,6 +17,14 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   const loadingTextRef = useRef<SVGTextElement>(null);
   const [isComplete, setIsComplete] = useState(false);
 
+  const timings = {
+    textIntro: 0.2,
+    waveFill: 4.2,
+    counter: 1.6,
+    textOutro: 0.2,
+    zoomOutro: 0.9,
+  };
+
   // Function to create wave path
   const createWavePath = (y: number, phase: number = 0): string => {
     const amplitude = 25;
@@ -39,7 +47,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       // Show loading text immediately
       tl.to(loadingTextRef.current, {
         opacity: 1,
-        duration: 0.3,
+        duration: timings.textIntro,
         delay: 0,
       });
 
@@ -47,7 +55,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       tl.to(
         {},
         {
-          duration: 7,
+          duration: timings.waveFill,
           onUpdate: function () {
             const progress = this.progress();
             const y = 500 - progress * 500;
@@ -64,7 +72,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       tl.to(
         {},
         {
-          duration: 2,
+          duration: timings.counter,
           onUpdate: function () {
             const progress = Math.round(this.progress() * 100);
             if (loadingTextRef.current) {
@@ -72,7 +80,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             }
           },
         },
-        "-=4"
+        "-=2.8"
       );
 
       // Fade out loading text
@@ -80,9 +88,9 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         loadingTextRef.current,
         {
           opacity: 0,
-          duration: 0.3,
+          duration: timings.textOutro,
         },
-        "-=0.3"
+        "-=0.2"
       );
 
       // Zoom out and fade the text smoothly
@@ -91,10 +99,10 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         {
           scale: 3,
           opacity: 0,
-          duration: 1.5,
+          duration: timings.zoomOutro,
           ease: "power2.inOut",
         },
-        "-=0.1"
+        "-=0.05"
       );
     },
     { scope: containerRef }

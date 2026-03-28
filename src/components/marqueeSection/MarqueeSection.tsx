@@ -10,9 +10,10 @@ gsap.registerPlugin(useGSAP);
 
 const MarqueeSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const marqueeRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
+  const trackRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef(0);
+  const marqueeTweenRef = useRef<gsap.core.Tween | null>(null);
+  const settleTweenRef = useRef<gsap.core.Tween | null>(null);
 
   const marqueeItems = [
     { text: "Beyond Website We Build Brand", id: 1 },
@@ -24,32 +25,78 @@ const MarqueeSection = () => {
 
   useGSAP(
     () => {
-      const handleWheel = (dets: WheelEvent) => {
-        if (dets.deltaY > 0) {
-          // Scrolling down - move left
-          gsap.to(".marquee", {
-            x: "-200%",
-            duration: 5,
-            repeat: -1,
-            ease: "none",
-          });
+      const track = trackRef.current;
+      const container = containerRef.current;
+      if (!track || !container) return;
 
-          gsap.to(".marquee-img", {
-            rotate: 180,
-          });
-        } else {
-          // Scrolling up - move right
-          gsap.to(".marquee", {
-            x: "0%",
-            duration: 5,
-            repeat: -1,
-            ease: "none",
-          });
+      let rafId = 0;
+      let queuedDelta = 0;
+      let lastScrollY = window.scrollY;
 
-          gsap.to(".marquee-img", {
-            rotate: 0,
+      marqueeTweenRef.current = gsap.to(track, {
+        xPercent: -50,
+        duration: 18,
+        ease: "none",
+        repeat: -1,
+      });
+
+      const setMarqueeMotion = (delta: number) => {
+        const direction = delta > 0 ? 1 : -1;
+        const speed = gsap.utils.clamp(0.9, 3, Math.abs(delta) / 55 + 1);
+
+        if (marqueeTweenRef.current) {
+          gsap.to(marqueeTweenRef.current, {
+            timeScale: direction * speed,
+            duration: 0.35,
+            overwrite: true,
           });
         }
+
+        gsap.to(".marquee-img", {
+          rotate: direction > 0 ? 180 : 0,
+          duration: 0.25,
+          ease: "power2.out",
+          overwrite: true,
+        });
+
+        settleTweenRef.current?.kill();
+        settleTweenRef.current = gsap.delayedCall(0.4, () => {
+          if (!marqueeTweenRef.current) return;
+          gsap.to(marqueeTweenRef.current, {
+            timeScale: direction,
+            duration: 0.6,
+            ease: "power2.out",
+          });
+        });
+      };
+
+      const queueMotionUpdate = (delta: number) => {
+        if (!delta) return;
+        queuedDelta = delta;
+
+        if (rafId) return;
+        rafId = window.requestAnimationFrame(() => {
+          setMarqueeMotion(queuedDelta);
+          queuedDelta = 0;
+          rafId = 0;
+        });
+      };
+
+      const handleWheel = (dets: WheelEvent) => {
+        if (dets.deltaY === 0) {
+          return;
+        }
+
+        queueMotionUpdate(dets.deltaY);
+      };
+
+      const handleScroll = () => {
+        const currentScrollY = window.scrollY;
+        const delta = currentScrollY - lastScrollY;
+        lastScrollY = currentScrollY;
+
+        if (Math.abs(delta) < 1) return;
+        queueMotionUpdate(delta * 8);
       };
 
       const handleTouchStart = (e: TouchEvent) => {
@@ -60,46 +107,31 @@ const MarqueeSection = () => {
         const touchY = e.touches[0].clientY;
         const delta = touchStartY.current - touchY;
 
-        if (Math.abs(delta) > 5) {
-          if (delta > 0) {
-            // Swiping up (scrolling down) - move left
-            gsap.to(".marquee", {
-              x: "-200%",
-              duration: 5,
-              repeat: -1,
-              ease: "none",
-            });
-
-            gsap.to(".marquee-img", {
-              rotate: 180,
-            });
-          } else {
-            // Swiping down (scrolling up) - move right
-            gsap.to(".marquee", {
-              x: "0%",
-              duration: 5,
-              repeat: -1,
-              ease: "none",
-            });
-
-            gsap.to(".marquee-img", {
-              rotate: 0,
-            });
-          }
+        if (Math.abs(delta) > 6) {
+          queueMotionUpdate(delta * 4);
           touchStartY.current = touchY;
         }
       };
 
-      window.addEventListener("wheel", handleWheel);
+      window.addEventListener("wheel", handleWheel, { passive: true });
+      window.addEventListener("scroll", handleScroll, { passive: true });
       window.addEventListener("touchstart", handleTouchStart, {
         passive: true,
       });
-      window.addEventListener("touchmove", handleTouchMove, { passive: true });
+      window.addEventListener("touchmove", handleTouchMove, {
+        passive: true,
+      });
 
       return () => {
         window.removeEventListener("wheel", handleWheel);
+        window.removeEventListener("scroll", handleScroll);
         window.removeEventListener("touchstart", handleTouchStart);
         window.removeEventListener("touchmove", handleTouchMove);
+        if (rafId) {
+          window.cancelAnimationFrame(rafId);
+        }
+        settleTweenRef.current?.kill();
+        marqueeTweenRef.current?.kill();
       };
     },
     { scope: containerRef }
@@ -108,30 +140,30 @@ const MarqueeSection = () => {
   return (
     <div className="font-inter w-full flex flex-col">
       <div ref={containerRef} className="w-full flex items-center">
-        <div className="bg-[#54d265] w-full flex py-[4vw] overflow-hidden">
-          {marqueeItems.map((item, index) => (
-            <div
-              key={item.id}
-              ref={(el) => {
-                marqueeRefs.current[index] = el;
-              }}
-              className="marquee flex items-center gap-[3vw] px-[1.5vw] shrink-0 -translate-x-full"
-            >
-              <h1 className="text-[4vw] text-black font-bold whitespace-nowrap">
-                {item.text}
-              </h1>
-              <Image
-                ref={(el) => {
-                  imageRefs.current[index] = el;
-                }}
-                src="/arrow-br.svg"
-                alt="Arrow"
-                width={64}
-                height={64}
-                className="marquee-img h-[4vw] w-auto"
-              />
-            </div>
-          ))}
+        <div className="bg-[#54d265] w-full py-[4vw] overflow-hidden">
+          <div
+            ref={trackRef}
+            className="flex w-max will-change-transform"
+            aria-label="Moving brand marquee"
+          >
+            {[...marqueeItems, ...marqueeItems].map((item, index) => (
+              <div
+                key={`${item.id}-${index}`}
+                className="marquee flex items-center gap-[3vw] px-[1.5vw] shrink-0"
+              >
+                <h1 className="text-[4vw] text-black font-bold whitespace-nowrap">
+                  {item.text}
+                </h1>
+                <Image
+                  src="/arrow-br.svg"
+                  alt="Arrow"
+                  width={64}
+                  height={64}
+                  className="marquee-img h-[4vw] w-auto"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
