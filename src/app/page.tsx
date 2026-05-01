@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Preloader from "@/components/Preloader";
 import AboutUsMain from "@/components/aboutUsSection/AboutUsMain";
 import Contact from "@/components/contactSection/Contact";
@@ -14,21 +14,19 @@ import TechnologiesMain from "@/components/technologiesSection/TechnologiesMain"
 import TestimonialsMain from "@/components/testimonialsSection/TestimonialsMain";
 import WhyChooseUsMain from "@/components/whyChooseUsSection/WhyChooseUsMain";
 
+let preloaderShown = false;
+
 export default function Home() {
-  // Initialize state based on sessionStorage (only runs once on mount)
-  const [showPreloader, setShowPreloader] = useState(() => {
-    // This function only runs once during initial render
-    if (typeof window !== "undefined") {
-      return !sessionStorage.getItem("preloaderShown");
+  const [showPreloader, setShowPreloader] = useState(true); // always true on server
+
+  useEffect(() => {
+    if (preloaderShown) {
+      setShowPreloader(false); // skip instantly on client if already shown
     }
-    return true; // Default to true on server-side
-  });
+  }, []);
 
   const handlePreloaderComplete = () => {
-    // Mark preloader as shown in this session
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("preloaderShown", "true");
-    }
+    preloaderShown = true;
     setShowPreloader(false);
   };
 
