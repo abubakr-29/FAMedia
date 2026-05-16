@@ -8,6 +8,7 @@ import ReactLenis from "lenis/react";
 import CustomCursor from "@/components/CustomCursor";
 import TabTitleChanger from "@/components/TabTitleChanger";
 import BackToTop from "@/components/BackToTop";
+import Script from "next/script";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -111,6 +112,12 @@ export default function RootLayout({
           <Footer />
           <BackToTop />
         </ReactLenis>
+        <Script
+          src="https://widget.famedia.co.in//chatbot-widget.iife.js"
+          data-api-url="https://famedia-chatbot.onrender.com"
+          data-api-key="bef39b6058e5cf4a0f8f2c6fc61961dc72bf9d0a3bb565e8801cc88c0a389ee7"
+          data-color="#54d265"
+        />
       </body>
     </html>
   );
