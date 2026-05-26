@@ -117,6 +117,7 @@ export default function RootLayout({
           data-api-url="https://famedia-chatbot.onrender.com"
           data-api-key="bef39b6058e5cf4a0f8f2c6fc61961dc72bf9d0a3bb565e8801cc88c0a389ee7"
           data-color="#54d265"
+          strategy="lazyOnload"
         />
       </body>
     </html>

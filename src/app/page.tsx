@@ -13,6 +13,7 @@ import SolutionMain from "@/components/solutionSection/SolutionMain";
 import TechnologiesMain from "@/components/technologiesSection/TechnologiesMain";
 import TestimonialsMain from "@/components/testimonialsSection/TestimonialsMain";
 import WhyChooseUsMain from "@/components/whyChooseUsSection/WhyChooseUsMain";
+import ChatbotPromo from "@/components/chatbotSection/ChatbotPromo";
 
 let preloaderShown = false;
 
@@ -44,6 +45,7 @@ export default function Home() {
             <AboutUsMain />
             <TechnologiesMain />
             <ServicesMain />
+            <ChatbotPromo />
             <ProjectsMain />
             <TestimonialsMain />
             <Contact />
