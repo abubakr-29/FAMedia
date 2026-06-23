@@ -7,112 +7,130 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-// Register plugins
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-export default function AboutUsRight() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const farazRef = useRef<HTMLAnchorElement>(null);
-  const abuRef = useRef<HTMLAnchorElement>(null);
+const founders = [
+  {
+    name: "Faraz Khan",
+    role: "Founder & Designer",
+    image: "/FarazKhan_Profile.webp",
+    linkedin: "https://www.linkedin.com/in/-faraz-khan-/",
+    bio: "Faraz is building FA Media to fix how businesses exist online. Most agencies build pretty things — FA Media builds systems that grow companies. As Founder & Creative Director, he oversees strategy and ensures every project combines design, technology, and marketing with purpose.",
+    reverse: false,
+  },
+  {
+    name: "MD. Mustaffa Aman",
+    role: "Co-Founder & Marketing Strategist",
+    image: "/MustaffaAman_Profile.webp",
+    linkedin: "https://www.instagram.com/aman.mustaffa/",
+    bio: "Aman is the connective tissue between ideas and outcomes. With an instinct for positioning and a natural ability to read rooms and win people over, he drives FA Media's growth strategy, client relationships, and brand narrative — turning vision into momentum.",
+    reverse: true,
+  },
+  {
+    name: "Abu Bakr Ahmed",
+    role: "Co-Founder & Full Stack Developer",
+    image: "/AbuBakrAhmed_Profile.webp",
+    linkedin: "https://www.linkedin.com/in/abu-bakr-ahmed-01a9532bb/",
+    bio: "Abu Bakr handles the engineering at FA Media. Full stack across React, Node.js, PostgreSQL, and MongoDB — he builds backends that hold and frontends that perform. Quietly expanding into AI/ML on the side.",
+    reverse: false,
+  },
+];
+
+function FounderCard({
+  founder,
+  index,
+}: {
+  founder: (typeof founders)[0];
+  index: number;
+}) {
+  const rowRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 80%",
-        end: "top 20%",
+        trigger: rowRef.current,
+        start: "top 82%",
+        end: "top 35%",
         scrub: 2,
       },
     });
 
-    if (farazRef.current) {
-      tl.fromTo(
-        farazRef.current,
-        { autoAlpha: 0, x: 100 },
-        { autoAlpha: 1, x: 0, duration: 0.6, ease: "power2.out" },
-        0
-      );
-    }
+    tl.fromTo(
+      imageRef.current,
+      { autoAlpha: 0, x: founder.reverse ? 60 : -60 },
+      { autoAlpha: 1, x: 0, duration: 0.7, ease: "power2.out" },
+      0,
+    );
 
-    if (abuRef.current) {
-      tl.fromTo(
-        abuRef.current,
-        { autoAlpha: 0, x: 80 },
-        { autoAlpha: 1, x: 0, duration: 0.6, ease: "power2.out" },
-        0.3
-      );
-    }
+    tl.fromTo(
+      textRef.current,
+      { autoAlpha: 0, x: founder.reverse ? -60 : 60 },
+      { autoAlpha: 1, x: 0, duration: 0.7, ease: "power2.out" },
+      0.15,
+    );
   });
 
   return (
-    <div ref={containerRef} className="font-inter flex flex-col gap-8">
-      <Link
-        href={"https://www.linkedin.com/in/-faraz-khan-/"}
-        target="_blank"
-        rel="noopener noreferrer"
-        ref={farazRef}
-        data-cursor-text={"See More"}
-        className="bg-[#1a1a1a] backdrop-blur-sm border border-stone-900 p-6 rounded-3xl shadow-xl "
-      >
-        <>
-          <div className="flex flex-row items-center gap-4">
+    <div
+      ref={rowRef}
+      className={`flex flex-col md:flex-row ${
+        founder.reverse ? "md:flex-row-reverse" : ""
+      } items-center gap-8 md:gap-12`}
+    >
+      {/* Image side */}
+      <div ref={imageRef} className="shrink-0">
+        <Link
+          href={founder.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cursor-text="See More"
+          className="block group relative"
+        >
+          <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden border border-stone-800 group-hover:border-[#54d265] transition-colors duration-300">
             <Image
-              src={"/FarazKhan_Profile.webp"}
-              alt={"Faraz Khan"}
-              width={80}
-              height={80}
-              className="rounded-full object-cover border-3 border-[#54d265]"
+              src={founder.image}
+              alt={founder.name}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div>
-              <h3 className="text-xl font-semibold text-stone-200">
-                Faraz Khan
-              </h3>
-              <p className="text-sm text-[#54d265]">
-                Designer & Frontend Developer
-              </p>
-            </div>
           </div>
-          <p className="text-sm text-stone-300 mt-4">
-            Faraz brings clarity to vision through elegant design and seamless
-            interfaces. With a sharp eye for UI/UX and mastery in HTML, CSS,
-            FIGMA, and frontend development, he creates digital experiences that
-            feel as good as they look.
-          </p>
-        </>
-      </Link>
+          {/* Green accent bar */}
+          <div className="absolute -bottom-3 left-4 right-4 h-0.5 bg-[#54d265] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        </Link>
+      </div>
 
-      <Link
-        href={"https://www.linkedin.com/in/abu-bakr-ahmed-01a9532bb/"}
-        target="_blank"
-        rel="noopener noreferrer"
-        data-cursor-text={"See More"}
-        ref={abuRef}
-        className="bg-[#1a1a1a] backdrop-blur-sm border border-stone-900 p-6 rounded-3xl shadow-xl "
+      {/* Text side */}
+      <div
+        ref={textRef}
+        className={`flex-1 border-l-2 border-[#54d265] pl-6 ${
+          founder.reverse
+            ? "md:border-l-0 md:border-r-2 md:pl-0 md:pr-6 md:text-right"
+            : ""
+        }`}
       >
-        <>
-          <div className="flex flex-row items-center gap-4">
-            <Image
-              src={"/AbuBakrAhmed_Profile.webp"}
-              alt={"Abu Bakr Ahmed"}
-              width={80}
-              height={80}
-              className="rounded-full object-cover border-3 border-[#54d265]"
-            />
-            <div>
-              <h3 className="text-xl font-semibold text-stone-200">
-                Abu Bakr Ahmed
-              </h3>
-              <p className="text-sm text-[#54d265]">Full Stack Developer</p>
-            </div>
-          </div>
-          <p className="text-sm text-stone-300 mt-4">
-            Abu Bakr turns complexity into clean, scalable solutions.
-            Specializing in React, Node.js, PostgreSQL, and MongoDB, he builds
-            reliable full-stack systems that are fast, secure, and built to
-            grow.
-          </p>
-        </>
-      </Link>
+        <span className="font-inter text-xs text-[#54d265] tracking-widest uppercase mb-1 block">
+          0{index + 1}
+        </span>
+        <h3 className="font-antonio text-2xl md:text-3xl text-stone-100 mb-1">
+          {founder.name}
+        </h3>
+        <p className="font-inter text-sm text-[#54d265] mb-3">{founder.role}</p>
+        <p className="font-inter text-sm text-stone-400 leading-relaxed">
+          {founder.bio}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default function AboutUsRight() {
+  return (
+    <div className="font-inter flex flex-col gap-14 md:gap-16">
+      {founders.map((founder, i) => (
+        <FounderCard key={founder.name} founder={founder} index={i} />
+      ))}
     </div>
   );
 }

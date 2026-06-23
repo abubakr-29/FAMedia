@@ -5,7 +5,6 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-// Register plugins
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export default function AboutUsLeft() {
@@ -18,43 +17,39 @@ export default function AboutUsLeft() {
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top 80%",
-        end: "top 20%",
+        end: "top 30%",
         scrub: 2,
       },
     });
 
-    if (titleRef.current) {
-      tl.fromTo(
-        titleRef.current,
-        { autoAlpha: 0, x: -100 },
-        { autoAlpha: 1, x: 0, duration: 0.6, ease: "power2.out" },
-        0
-      );
-    }
+    tl.fromTo(
+      titleRef.current,
+      { autoAlpha: 0, y: -30 },
+      { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out" },
+      0,
+    );
 
-    if (subtitleRef.current) {
-      tl.fromTo(
-        subtitleRef.current,
-        { autoAlpha: 0, x: -80 },
-        { autoAlpha: 1, x: 0, duration: 0.6, ease: "power2.out" },
-        0.3
-      );
-    }
+    tl.fromTo(
+      subtitleRef.current,
+      { autoAlpha: 0, y: 20 },
+      { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out" },
+      0.25,
+    );
   });
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className="text-center max-w-2xl mx-auto mb-16">
       <h2
         ref={titleRef}
-        className="font-antonio text-3xl sm:text-4xl tracking-tight mb-8 text-stone-200 text-center lg:text-left lg:mb-6 md:text-5xl"
+        className="font-antonio text-4xl md:text-5xl tracking-tight mb-5 text-stone-200"
       >
         Meet the <span className="text-[#54d265]">Founders</span>
       </h2>
       <p
         ref={subtitleRef}
-        className="font-inter text-lg sm:text-xl text-stone-300 text-center lg:text-left sm:leading-relaxed tracking-tight"
+        className="font-inter text-lg text-stone-400 leading-relaxed tracking-tight"
       >
-        We&apos;re a duo passionate about building beautiful, high-performing
+        We&apos;re a trio passionate about building beautiful, high-performing
         digital experiences. At FA Media, we combine creativity, technology, and
         strategy to help brands grow and shine online.
       </p>

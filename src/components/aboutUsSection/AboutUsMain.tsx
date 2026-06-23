@@ -6,14 +6,9 @@ export default function AboutUsMain() {
   return (
     <section className="py-16 px-4" id="about">
       <AboutUsTop />
-      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 items-start mt-10">
-        <div className="flex-1 my-auto">
-          <AboutUsLeft />
-        </div>
-
-        <div className="flex-1 ">
-          <AboutUsRight />
-        </div>
+      <div className="max-w-4xl mx-auto mt-10 flex flex-col">
+        <AboutUsLeft />
+        <AboutUsRight />
       </div>
     </section>
   );
