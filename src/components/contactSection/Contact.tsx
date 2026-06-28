@@ -1,90 +1,10 @@
 "use client";
 
-import { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ContactForm from "./ContactForm";
 
-// Register plugins
-gsap.registerPlugin(useGSAP, ScrollTrigger);
-
 export default function Contact() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const formContainerRef = useRef<HTMLDivElement>(null);
-  const infoContainerRef = useRef<HTMLDivElement>(null);
-  const illustrationRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 20%",
-          scrub: 2,
-        },
-      });
-
-      // Animate title
-      if (titleRef.current) {
-        tl.fromTo(
-          titleRef.current,
-          { autoAlpha: 0, y: -50 },
-          { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out" },
-          0
-        );
-      }
-
-      // Animate subtitle
-      if (subtitleRef.current) {
-        tl.fromTo(
-          subtitleRef.current,
-          { autoAlpha: 0, y: -30 },
-          { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out" },
-          0.1
-        );
-      }
-
-      // Animate form container
-      if (formContainerRef.current) {
-        tl.fromTo(
-          formContainerRef.current,
-          { autoAlpha: 0, x: -50 },
-          { autoAlpha: 1, x: 0, duration: 0.8, ease: "power2.out" },
-          0.2
-        );
-      }
-
-      // Animate info container
-      if (infoContainerRef.current) {
-        tl.fromTo(
-          infoContainerRef.current,
-          { autoAlpha: 0, x: 50 },
-          { autoAlpha: 1, x: 0, duration: 0.8, ease: "power2.out" },
-          0.3
-        );
-      }
-
-      // Animate illustration
-      if (illustrationRef.current) {
-        gsap.to(illustrationRef.current, {
-          y: -20,
-          duration: 2,
-          ease: "power1.inOut",
-          repeat: -1,
-          yoyo: true,
-        });
-      }
-    },
-    { scope: sectionRef }
-  );
-
   return (
     <section
-      ref={sectionRef}
       className="font-inter py-20 mx-4 px-4 relative overflow-hidden bg-linear-to-b from-black via-[#0a0a0a] to-black rounded-3xl"
       id="contact"
     >
@@ -97,16 +17,10 @@ export default function Contact() {
       <div className="container mx-auto max-w-7xl relative z-10">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2
-            ref={titleRef}
-            className="font-antonio text-4xl md:text-5xl font-bold mb-4 text-stone-200"
-          >
+          <h2 className="font-antonio text-4xl md:text-5xl font-bold mb-4 text-stone-200">
             Let&apos;s <span className="text-[#54d265]">Connect</span>
           </h2>
-          <p
-            ref={subtitleRef}
-            className="text-stone-300 text-base md:text-lg max-w-2xl mx-auto opacity-0"
-          >
+          <p className="text-stone-300 text-base md:text-lg max-w-2xl mx-auto">
             Got a project or idea in mind? Drop a message — we&apos;re just a
             few clicks away!
           </p>
@@ -115,10 +29,7 @@ export default function Contact() {
         {/* Content Grid */}
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Form Container */}
-          <div
-            ref={formContainerRef}
-            className="bg-linear-to-br from-[#1a1a1a] to-[#0f0f0f] rounded-3xl p-8 md:p-10 border border-stone-800/50 shadow-2xl opacity-0"
-          >
+          <div className="bg-linear-to-br from-[#1a1a1a] to-[#0f0f0f] rounded-3xl p-8 md:p-10 border border-stone-800/50 shadow-2xl">
             <h3 className="text-2xl font-semibold text-stone-300 mb-6">
               Get In Touch
             </h3>
@@ -126,9 +37,9 @@ export default function Contact() {
           </div>
 
           {/* Info Container */}
-          <div ref={infoContainerRef} className="space-y-8 opacity-0">
+          <div className="space-y-8">
             {/* Illustration */}
-            <div ref={illustrationRef} className="flex justify-center mb-8">
+            <div className="flex justify-center mb-8">
               <div className="relative">
                 <div className="absolute inset-0 bg-linear-to-r from-green-500/20 to-lime-500/20 rounded-full blur-2xl" />
                 <div className="relative bg-linear-to-br from-[#54d265] to-[#2d9f42] rounded-full p-12 w-64 h-64 flex items-center justify-center">
@@ -193,12 +104,20 @@ export default function Contact() {
                     />
                   </svg>
                 </div>
-                <a
-                  href="tel:+919007873303"
-                  className="text-stone-300 hover:text-white transition-colors"
-                >
-                  +91 90078 73303
-                </a>
+                <div className="flex flex-col gap-1">
+                  <a
+                    href="tel:+919007873303"
+                    className="text-stone-300 hover:text-white transition-colors"
+                  >
+                    +91 90078 73303
+                  </a>
+                  <a
+                    href="tel:+918282835993"
+                    className="text-stone-300 hover:text-white transition-colors"
+                  >
+                    +91 82828 35993
+                  </a>
+                </div>
               </div>
 
               {/* Location */}

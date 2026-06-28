@@ -159,37 +159,38 @@ export default function AllProjects() {
           768: { slidesPerView: 2, spaceBetween: 20 },
           1024: { slidesPerView: 3, spaceBetween: 24 },
         }}
+        className="items-stretch"
       >
         {projects.map((project) => (
-          <SwiperSlide key={project._id}>
-            <div className="flex flex-col h-[600px] sm:h-[620px] bg-stone-950 rounded-xl border border-stone-700 p-4 sm:p-6 shadow-lg">
-              <div className="w-full flex justify-center mb-6">
+          <SwiperSlide key={project._id} className="h-auto">
+            <div className="flex h-[620px] sm:h-[640px] lg:h-[660px] flex-col overflow-hidden rounded-xl border border-stone-700 bg-stone-950 p-4 shadow-lg sm:p-6">
+              <div className="mb-5 flex justify-center">
                 {project.image ? (
                   <Image
                     src={project.image}
                     width={300}
                     height={300}
                     alt={project.title}
-                    className="rounded-lg object-cover w-full"
+                    className="h-[220px] w-full rounded-lg object-cover sm:h-60"
                   />
                 ) : (
-                  <div className="rounded-lg bg-stone-900 w-full h-[300px] flex items-center justify-center text-stone-500 text-sm">
+                  <div className="flex h-[220px] w-full items-center justify-center rounded-lg bg-stone-900 text-sm text-stone-500 sm:h-60">
                     No image available
                   </div>
                 )}
               </div>
-              <div className="grow">
-                <h3 className="font-bold text-lg text-stone-300 mb-2">
+              <div className="flex min-h-0 grow flex-col">
+                <h3 className="mb-2 line-clamp-2 text-lg font-bold text-stone-300">
                   {project.title}
                 </h3>
-                <p className="mb-2 font-medium text-sm text-stone-500">
+                <p className="mb-2 line-clamp-1 text-sm font-medium text-stone-500">
                   {project.subtitle}
                 </p>
-                <p className="mb-4 text-stone-400 text-sm sm:text-base">
+                <p className="mb-4 line-clamp-4 text-sm text-stone-400 sm:text-base">
                   {project.description}
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2 mb-4">
+              <div className="mb-4 flex flex-wrap gap-2 overflow-hidden">
                 {project.technologies?.map((tech, index) => (
                   <span
                     className="rounded bg-stone-900 text-stone-300 p-1.5 text-xs sm:text-sm font-medium"

@@ -28,7 +28,7 @@ export default function TestimonialsText() {
         titleRef.current,
         { autoAlpha: 0, y: -50 },
         { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out" },
-        0
+        0,
       );
     }
 
@@ -37,7 +37,7 @@ export default function TestimonialsText() {
         subtitleRef.current,
         { autoAlpha: 0, y: -30 },
         { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out" },
-        0.1
+        0.1,
       );
     }
   });
@@ -46,13 +46,13 @@ export default function TestimonialsText() {
     <div ref={containerRef}>
       <h2
         ref={titleRef}
-        className="font-antonio text-4xl text-stone-200 md:text-5xl mb-4"
+        className="font-antonio text-4xl text-stone-200 md:text-5xl mb-4 opacity-0"
       >
         Testimonials
       </h2>
       <p
         ref={subtitleRef}
-        className="font-inter text-stone-300 max-w-2xl mx-auto text-base md:text-lg"
+        className="font-inter text-stone-300 max-w-2xl mx-auto text-base md:text-lg opacity-0"
       >
         Results That Speak for Themselves Our clients have seen up to a 45%
         increase in engagement and a 35% boost in conversions after working with
