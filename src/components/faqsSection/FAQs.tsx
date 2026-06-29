@@ -2,11 +2,6 @@
 
 import { useRef, useState } from "react";
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-// Register plugins
-gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 interface FAQ {
   id: string;
@@ -50,37 +45,8 @@ const faqData: FAQ[] = [
 export default function FAQs() {
   const [openId, setOpenId] = useState<string | null>(null);
   const containerRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
   const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
   const iconRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useGSAP(
-    () => {
-      // Animate title
-      if (titleRef.current) {
-        gsap.fromTo(
-          titleRef.current,
-          {
-            autoAlpha: 0,
-            y: -50,
-          },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 1,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: titleRef.current,
-              start: "top 80%",
-              end: "top 40%",
-              scrub: 2,
-            },
-          }
-        );
-      }
-    },
-    { scope: containerRef }
-  );
 
   const toggleFAQ = (id: string, index: number) => {
     const content = contentRefs.current[index];
@@ -153,7 +119,7 @@ export default function FAQs() {
       ref={containerRef}
       className="font-inter py-20 px-4 max-w-4xl mx-auto"
     >
-      <div ref={titleRef} className="text-center mb-12 opacity-0">
+      <div className="text-center mb-12">
         <h2 className="font-antonio text-4xl lg:text-5xl text-stone-200">
           FA<span className="text-[#54d265]">Qs</span>
         </h2>
