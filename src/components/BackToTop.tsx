@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import Lenis from "lenis";
+import { useLenis } from "lenis/react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
@@ -10,29 +10,10 @@ gsap.registerPlugin(useGSAP);
 const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const lenisRef = useRef<Lenis | null>(null);
+  const lenis = useLenis();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    // Initialize Lenis
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) =>
-        t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
-      orientation: "vertical",
-      gestureOrientation: "vertical",
-      smoothWheel: true,
-    });
-
-    lenisRef.current = lenis;
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
-
     const toggleVisibility = () => {
       if (window.scrollY > 300) {
         setIsVisible(true);
@@ -41,11 +22,11 @@ const BackToTop = () => {
       }
     };
 
-    window.addEventListener("scroll", toggleVisibility);
+    window.addEventListener("scroll", toggleVisibility, { passive: true });
+    toggleVisibility();
 
     return () => {
       window.removeEventListener("scroll", toggleVisibility);
-      lenis.destroy();
     };
   }, []);
 
@@ -79,7 +60,7 @@ const BackToTop = () => {
   );
 
   const scrollToTop = () => {
-    lenisRef.current?.scrollTo(0, {
+    lenis?.scrollTo(0, {
       duration: 1.5,
       easing: (t) =>
         t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
