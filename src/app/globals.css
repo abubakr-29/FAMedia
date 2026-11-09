@@ -85,3 +85,22 @@ body {
   background: #efefef;
   border: 1px solid #efefef;
 }
+
+/* Intro preloader: skipped for returning visitors / reduced-motion users. */
+html[data-skip-preloader] #fa-preloader {
+  display: none;
+}
+
+/* Hero floating client logos (moved from styled-jsx: not SSR-safe here). */
+@keyframes slow-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.animate-slow-bounce {
+  animation: slow-bounce 3s ease-in-out infinite;
+}

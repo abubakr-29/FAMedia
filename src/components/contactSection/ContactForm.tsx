@@ -36,6 +36,12 @@ export default function ContactForm() {
       return;
     }
 
+    // Stamp the real submission time (the rendered value could be stale).
+    const dateField = form.current.elements.namedItem("date");
+    if (dateField instanceof HTMLInputElement) {
+      dateField.value = new Date().toLocaleString();
+    }
+
     try {
       await emailjs.sendForm(
         "service_40s17kx",
@@ -58,7 +64,7 @@ export default function ContactForm() {
 
   return (
     <form ref={form} onSubmit={sendEmail} className="space-y-6">
-      <input type="hidden" name="date" value={new Date().toLocaleString()} />
+      <input type="hidden" name="date" defaultValue="" />
 
       <input
         name="from_name"

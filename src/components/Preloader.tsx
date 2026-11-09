@@ -17,12 +17,12 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   const loadingTextRef = useRef<SVGTextElement>(null);
   const [isComplete, setIsComplete] = useState(false);
 
+  // Total ≈ 2s — long enough to feel branded, short enough not to cost visitors.
   const timings = {
-    textIntro: 0.2,
-    waveFill: 4.2,
-    counter: 1.6,
-    textOutro: 0.2,
-    zoomOutro: 0.9,
+    textIntro: 0.15,
+    waveFill: 1.3,
+    textOutro: 0.15,
+    zoomOutro: 0.5,
   };
 
   // Function to create wave path
@@ -59,7 +59,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
           onUpdate: function () {
             const progress = this.progress();
             const y = 500 - progress * 500;
-            const phase = progress * Math.PI * 8;
+            const phase = progress * Math.PI * 4;
             const wavePath = createWavePath(y, phase);
             wavePathRef.current?.setAttribute("d", wavePath);
           },
@@ -72,7 +72,8 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       tl.to(
         {},
         {
-          duration: timings.counter,
+          duration: timings.waveFill,
+          ease: "power2.inOut",
           onUpdate: function () {
             const progress = Math.round(this.progress() * 100);
             if (loadingTextRef.current) {
@@ -80,7 +81,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             }
           },
         },
-        "-=2.8"
+        "<"
       );
 
       // Fade out loading text

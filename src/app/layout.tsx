@@ -7,6 +7,9 @@ import MarqueeSection from "@/components/marqueeSection/MarqueeSection";
 import ReactLenis from "lenis/react";
 import CustomCursor from "@/components/CustomCursor";
 import TabTitleChanger from "@/components/TabTitleChanger";
+import NavigationProgress from "@/components/NavigationProgress";
+import { preloaderBootScript } from "@/lib/preloader";
+import { Suspense } from "react";
 import BackToTop from "@/components/BackToTop";
 import Script from "next/script";
 import JsonLd from "@/components/seo/JsonLd";
@@ -89,8 +92,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: preloaderBootScript }} />
+        <noscript>
+          <style>{`#fa-preloader{display:none}`}</style>
+        </noscript>
         <link
           rel="alternate"
           type="text/markdown"
@@ -101,6 +108,9 @@ export default function RootLayout({
       <body className={`${inter.variable} ${antonio.variable} antialiased`}>
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
         <ReactLenis root>
+          <Suspense fallback={null}>
+            <NavigationProgress />
+          </Suspense>
           <TabTitleChanger />
           <Navbar />
           <CustomCursor />

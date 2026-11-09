@@ -1,6 +1,21 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useSyncExternalStore,
+} from "react";
+
+// Window width as a hydration-safe external store: the server (and the first
+// client render) use 0, then React re-renders with the real width.
+function subscribeToResize(callback: () => void) {
+  window.addEventListener("resize", callback);
+  return () => window.removeEventListener("resize", callback);
+}
+const getWindowWidth = () => window.innerWidth;
+const getServerWindowWidth = () => 0;
 
 interface Testimonial {
   feedback: string;
@@ -37,8 +52,10 @@ const testimonials: Testimonial[] = [
 
 export default function AllTestimonials() {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [windowWidth, setWindowWidth] = useState<number>(
-    typeof window !== "undefined" ? window.innerWidth : 0
+  const windowWidth = useSyncExternalStore(
+    subscribeToResize,
+    getWindowWidth,
+    getServerWindowWidth
   );
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -52,15 +69,6 @@ export default function AllTestimonials() {
     if (windowWidth >= 768) return 2;
     return 1;
   }, [windowWidth]);
-
-  useEffect(() => {
-    const handleResize = (): void => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const nextTestimonial = useCallback((): void => {
     setCurrentIndex((prevIndex) => {

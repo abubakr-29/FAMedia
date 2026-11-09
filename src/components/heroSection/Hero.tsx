@@ -4,6 +4,7 @@ import Link from "next/link";
 import LiquidEther from "./LiquidEther";
 import { useState } from "react";
 import Image from "next/image";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 export default function Hero() {
   const [hoveredTestimonial, setHoveredTestimonial] = useState<number | null>(
@@ -15,38 +16,25 @@ export default function Hero() {
       id="hero"
       style={{ width: "100%", height: "100vh", position: "relative" }}
     >
-      <LiquidEther
-        colors={["#FFFFFF", "#F8F9FA", "#E8F4F8"]}
-        mouseForce={25}
-        cursorSize={100}
-        isViscous={false}
-        viscous={30}
-        iterationsViscous={32}
-        iterationsPoisson={32}
-        resolution={0.5}
-        isBounce={false}
-        autoDemo={true}
-        autoSpeed={0.5}
-        autoIntensity={2.2}
-        takeoverDuration={0.25}
-        autoResumeDelay={3000}
-        autoRampDuration={0.6}
-      />
-
-      <style jsx>{`
-        @keyframes slow-bounce {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-8px);
-          }
-        }
-        .animate-slow-bounce {
-          animation: slow-bounce 3s ease-in-out infinite;
-        }
-      `}</style>
+      <ErrorBoundary>
+        <LiquidEther
+          colors={["#FFFFFF", "#F8F9FA", "#E8F4F8"]}
+          mouseForce={25}
+          cursorSize={100}
+          isViscous={false}
+          viscous={30}
+          iterationsViscous={32}
+          iterationsPoisson={32}
+          resolution={0.5}
+          isBounce={false}
+          autoDemo={true}
+          autoSpeed={0.5}
+          autoIntensity={2.2}
+          takeoverDuration={0.25}
+          autoResumeDelay={3000}
+          autoRampDuration={0.6}
+        />
+      </ErrorBoundary>
 
       {/* Floating Testimonial 1 - Bottom Left */}
       <div
