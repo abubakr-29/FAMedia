@@ -198,7 +198,7 @@ export default function Footer() {
             </Link>
             <p className="text-center sm:text-left text-sm text-stone-400 mt-6 max-w-xs font-light leading-relaxed">
               Elevating brands with stunning web experiences that captivate and
-              convert.
+              convert — for clients in the USA, UK, Canada, Australia and India.
             </p>
             {/* Social Icons */}
             <p className="text-stone-400 text-sm mt-6 mb-4">Connect with us</p>

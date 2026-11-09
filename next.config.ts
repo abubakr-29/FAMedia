@@ -1,9 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [new URL("https://cdn.sanity.io/**")],
+  },
+  async redirects() {
+    return [
+      // Consolidate ranking signals on the apex domain.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.famedia.co.in" }],
+        destination: "https://famedia.co.in/:path*",
+        permanent: true,
+      },
+    ];
   },
 };
 

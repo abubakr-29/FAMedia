@@ -113,7 +113,7 @@ export default function Hero() {
       {/* Content Overlay */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none space-y-6 px-4">
         <p className="uppercase text-stone-200 tracking-widest text-xs sm:text-sm md:text-base">
-          Grow your brand. Own your voice.
+          Web Design & Development Agency · Worldwide
         </p>
         <h1 className="uppercase font-antonio font-bold tracking-tigther sm:tracking-normal text-3xl sm:text-4xl md:text-6xl lg:text-7xl leading-tight text-[#54d265] text-center">
           Beyond Website <br className="hidden md:block" /> We Build Brand

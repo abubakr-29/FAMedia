@@ -151,12 +151,12 @@ const MarqueeSection = () => {
                 key={`${item.id}-${index}`}
                 className="marquee flex items-center gap-[3vw] px-[1.5vw] shrink-0"
               >
-                <h1 className="text-[4vw] text-black font-bold whitespace-nowrap">
+                <p className="text-[4vw] text-black font-bold whitespace-nowrap">
                   {item.text}
-                </h1>
+                </p>
                 <Image
                   src="/arrow-br.svg"
-                  alt="Arrow"
+                  alt=""
                   width={64}
                   height={64}
                   className="marquee-img h-[4vw] w-auto"

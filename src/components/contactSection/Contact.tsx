@@ -143,7 +143,10 @@ export default function Contact() {
                     />
                   </svg>
                 </div>
-                <span className="text-stone-300">Kolkata, India</span>
+                <span className="text-stone-300">
+                  Kolkata, India · Working with clients in the USA, UK,
+                  Canada, Australia &amp; worldwide
+                </span>
               </div>
             </div>
           </div>

@@ -2,45 +2,7 @@
 
 import { useRef, useState } from "react";
 import gsap from "gsap";
-
-interface FAQ {
-  id: string;
-  question: string;
-  answer: string;
-}
-
-const faqData: FAQ[] = [
-  {
-    id: "item-1",
-    question: "What services does FA Media offer?",
-    answer:
-      "FA Media provides custom web development services including landing pages, portfolio websites, personal brand sites, hosting, and automation solutions. We also offer AI chatbot integrations and business automation tailored to your needs.",
-  },
-  {
-    id: "item-2",
-    question: "How long does it take to build a website?",
-    answer:
-      "Timelines vary based on the project scope. Simple landing pages are typically delivered within 3–5 days, while complete websites can take 1–2 weeks. We provide a detailed timeline after the initial consultation.",
-  },
-  {
-    id: "item-3",
-    question: "Do you provide ongoing support and maintenance?",
-    answer:
-      "Yes, we offer optional maintenance plans that include updates, backups, performance monitoring, and security patches to ensure your website stays optimized and secure.",
-  },
-  {
-    id: "item-4",
-    question: "Can you help with design, branding, or content?",
-    answer:
-      "Yes! While development is our core focus, we help refine your layout, visuals, and basic content. For deep branding or copy, we can refer trusted creatives or collaborate with yours.",
-  },
-  {
-    id: "item-5",
-    question: "Why choose FA Media over other agencies?",
-    answer:
-      "We combine technical excellence with business-focused strategy. Our sites are fast, mobile-first, SEO-ready, and built to convert — all with personal attention from a passionate team that treats your project like their own.",
-  },
-];
+import { faqData } from "@/data/faqs";
 
 export default function FAQs() {
   const [openId, setOpenId] = useState<string | null>(null);
@@ -117,6 +79,7 @@ export default function FAQs() {
   return (
     <section
       ref={containerRef}
+      id="faqs"
       className="font-inter py-20 px-4 max-w-4xl mx-auto"
     >
       <div className="text-center mb-12">
@@ -136,6 +99,8 @@ export default function FAQs() {
           >
             <button
               onClick={() => toggleFAQ(faq.id, index)}
+              aria-expanded={openId === faq.id}
+              aria-controls={`${faq.id}-answer`}
               className="w-full text-left py-6 px-6 flex items-center justify-between gap-4 group cursor-pointer"
             >
               <span className="text-stone-300 text-sm md:text-base font-medium group-hover:text-white transition-colors leading-relaxed">
@@ -166,6 +131,7 @@ export default function FAQs() {
               ref={(el) => {
                 contentRefs.current[index] = el;
               }}
+              id={`${faq.id}-answer`}
               className="overflow-hidden h-0 opacity-0"
             >
               <div className="px-6 pb-6 text-sm md:text-base text-stone-400 leading-relaxed">

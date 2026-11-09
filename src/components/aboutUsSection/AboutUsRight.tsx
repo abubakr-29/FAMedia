@@ -34,14 +34,14 @@ const founders = [
     bio: "Abu Bakr handles the engineering at FA Media. Full stack across React, Node.js, PostgreSQL, and MongoDB — he builds backends that hold and frontends that perform. Quietly expanding into AI/ML on the side.",
     reverse: false,
   },
-  // {
-  //   name: "Jason Paul",
-  //   role: "Client Management Lead",
-  //   image: "",
-  //   linkedin: "#",
-  //   bio: "Jason is the bridge between FA Media and the people we serve. He keeps projects aligned, understands each client's goals, and ensures every client feels heard and supported — turning strong relationships into lasting partnerships.",
-  //   reverse: true,
-  // },
+  {
+    name: "Jason Paul",
+    role: "Client Management Lead",
+    image: "/JasonPaul_Profile.webp",
+    linkedin: "https://www.instagram.com/jason_paul_11/",
+    bio: "Jason is the bridge between FA Media and the people we serve. He keeps projects aligned, understands each client's goals, and ensures every client feels heard and supported — turning strong relationships into lasting partnerships.",
+    reverse: true,
+  },
 ];
 
 function FounderCard({

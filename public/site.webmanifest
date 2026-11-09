@@ -1,12 +1,12 @@
 {
   "name": "FA Media",
   "short_name": "FA Media",
-  "description": "FA Media is a professional web development and automation agency building high-performance, conversion-driven websites in India.",
+  "description": "Remote-first web design & development agency building fast, custom-coded websites, landing pages and AI chatbots for brands in the USA, UK, Canada, Australia and India.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "scope": "/",
   "icons": [
     {

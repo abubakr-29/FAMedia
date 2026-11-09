@@ -75,7 +75,7 @@ export default function AboutUsTop() {
           Ready to improve your online presence? Let&apos;s get started.
         </p>
         <Link
-          href={"#"}
+          href={"#contact"}
           data-cursor-text="Click Me"
           className="inline-block bg-white rounded-full py-4 px-8 text-base text-black tracking-wide hover:bg-white/70 transition-all duration-500 cursor-pointer"
         >

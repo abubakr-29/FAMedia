@@ -127,7 +127,7 @@ export default function AllServices() {
           Ready to transform your online presence?
         </h2>
         <Link
-          href={"#"}
+          href={"#contact"}
           data-cursor-text="Click Me"
           className="inline-block bg-white rounded-full py-4 px-6 text-base text-black tracking-tight hover:bg-white/70 transition-all duration-500 cursor-pointer"
         >

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Antonio } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
@@ -9,6 +9,9 @@ import CustomCursor from "@/components/CustomCursor";
 import TabTitleChanger from "@/components/TabTitleChanger";
 import BackToTop from "@/components/BackToTop";
 import Script from "next/script";
+import JsonLd from "@/components/seo/JsonLd";
+import { SITE, SITE_URL, KEYWORDS } from "@/lib/site";
+import { organizationSchema, websiteSchema } from "@/lib/structured-data";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -24,64 +27,41 @@ const antonio = Antonio({
 });
 
 export const metadata: Metadata = {
-  title: "FA Media | Web Development Agency",
-  description:
-    "FA Media is a professional web development agency specializing in high-performance websites, landing pages, and automation solutions for businesses that want to scale online.",
-  keywords: [
-    "FA Media",
-    "web development agency India",
-    "Next.js websites",
-    "React developer Kolkata",
-    "landing page design",
-    "portfolio website development",
-    "business automation",
-    "website hosting and maintenance",
-    "conversion optimization",
-    "AI automation services",
-  ],
-  authors: [{ name: "FA Media", url: "https://famedia.co.in" }],
-  creator: "FA Media",
-  publisher: "FA Media",
-  metadataBase: new URL("https://famedia.co.in"),
-
-  alternates: {
-    canonical: "https://famedia.co.in",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "FA Media | Custom Web Design & Development Agency Worldwide",
+    template: "%s | FA Media",
   },
+  description:
+    "FA Media is a remote-first web design & development agency building fast, custom-coded Next.js websites, landing pages and AI chatbots for businesses in the USA, UK, Canada, Australia and India. Book a free call.",
+  applicationName: SITE.name,
+  keywords: KEYWORDS,
+  authors: [{ name: SITE.name, url: SITE_URL }],
+  creator: SITE.name,
+  publisher: SITE.name,
   icons: {
     icon: [
-      { url: "/favicon/favicon/favicon.ico", sizes: "any" },
+      { url: "/favicon/favicon.ico", sizes: "any" },
       { url: "/favicon/favicon-32x32.png", type: "image/png", sizes: "32x32" },
       { url: "/favicon/favicon-16x16.png", type: "image/png", sizes: "16x16" },
-      { url: "/favicon/icon.svg", type: "image/svg+xml" },
     ],
     apple: "/favicon/apple-touch-icon.png",
     shortcut: "/favicon/favicon.ico",
   },
-
   openGraph: {
     type: "website",
-    url: "https://famedia.co.in",
-    title:
-      "FA Media | Professional Web Development & Automation Agency in India",
+    siteName: SITE.name,
+    locale: "en_US",
+    alternateLocale: ["en_GB", "en_CA", "en_AU", "en_IN"],
+    title: "FA Media | Custom Web Design & Development Agency Worldwide",
     description:
-      "We build fast, responsive, and modern websites for brands that want results. FA Media helps businesses grow through digital design, automation, and AI-powered systems.",
-    siteName: "FA Media",
-    images: [
-      {
-        url: "/famedialogo.jpeg",
-        width: 1200,
-        height: 630,
-        alt: "FA Media - Web Development & Automation Agency",
-      },
-    ],
+      "Fast, custom-coded websites, landing pages and AI chatbots for brands in the USA, UK, Canada, Australia and India. 100% custom code — no templates.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "FA Media | Web Development & Automation Experts",
+    title: "FA Media | Custom Web Design & Development Agency",
     description:
-      "Building high-performance, modern websites and automation systems for businesses that want to scale.",
-    creator: "@fa_media",
-    images: ["/famedialogo.jpeg"],
+      "Fast, custom-coded websites, landing pages and AI chatbots for growing brands worldwide.",
   },
   robots: {
     index: true,
@@ -89,10 +69,18 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
     },
   },
   manifest: "/site.webmanifest",
   category: "technology",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a0a0a",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
@@ -102,7 +90,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="alternate"
+          type="text/markdown"
+          href="/llms.txt"
+          title="LLM-friendly summary of FA Media"
+        />
+      </head>
       <body className={`${inter.variable} ${antonio.variable} antialiased`}>
+        <JsonLd data={[organizationSchema(), websiteSchema()]} />
         <ReactLenis root>
           <TabTitleChanger />
           <Navbar />

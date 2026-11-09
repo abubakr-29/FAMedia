@@ -4,7 +4,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import { AuthorStatus } from "@/components/AuthorStatus";
+import JsonLd from "@/components/seo/JsonLd";
+import { SITE_URL } from "@/lib/site";
+import { blogPostingSchema, breadcrumbSchema } from "@/lib/structured-data";
 
 interface BlogPost extends SanityDocument {
   _id: string;
@@ -18,6 +22,7 @@ interface BlogPost extends SanityDocument {
   author: string;
   authorRole: string;
   _createdAt: string;
+  _updatedAt: string;
 }
 
 const BLOGS_QUERY = `*[_type == 'blog' && slug.current == $slug] {
@@ -39,7 +44,8 @@ const BLOGS_QUERY = `*[_type == 'blog' && slug.current == $slug] {
     readTime,
     author,
     authorRole,
-    _createdAt
+    _createdAt,
+    _updatedAt
   }[0]`;
 
 const options = { next: { revalidate: 30 } };
@@ -57,50 +63,70 @@ export async function generateMetadata({
     };
   }
 
-  const blog = await client.fetch(
+  const blog = await client.fetch<{
+    title: string;
+    excerpt?: string;
+    slug: string;
+    image?: string;
+    category?: string;
+    topics?: string[];
+    author?: string;
+    _createdAt: string;
+    _updatedAt: string;
+  } | null>(
     `*[_type == 'blog' && slug.current == $slug] {
-      _id,
       title,
       excerpt,
       "slug": slug.current,
-      "image": titleImage.asset->url
+      "image": titleImage.asset->url,
+      category,
+      topics,
+      author,
+      _createdAt,
+      _updatedAt
     }[0]`,
-    { slug: resolvedParams.slug } // ✅ Use resolvedParams
+    { slug: resolvedParams.slug },
+    options
   );
 
   if (!blog) {
     return {
-      title: "Blog Not Found | FA Media",
+      title: "Blog Not Found",
+      robots: { index: false, follow: true },
     };
   }
 
+  const path = `/blogs/${blog.slug}`;
+  const images = blog.image
+    ? [{ url: blog.image, width: 1200, height: 630, alt: blog.title }]
+    : undefined;
+
   return {
-    title: `${blog.title} | FA Media`,
+    title: blog.title,
     description: blog.excerpt,
-    alternates: {
-      canonical: `https://famedia.co.in/blogs/${blog.slug}`,
-    },
+    keywords: [blog.category, ...(blog.topics ?? [])].filter(
+      (k): k is string => Boolean(k)
+    ),
+    authors: blog.author ? [{ name: blog.author }] : undefined,
+    alternates: { canonical: path },
     openGraph: {
       type: "article",
       title: blog.title,
       description: blog.excerpt,
-      url: `https://famedia.co.in/blogs/${blog.slug}`,
-      images: blog.image
-        ? [
-            {
-              url: blog.image,
-              width: 1200,
-              height: 630,
-              alt: blog.title,
-            },
-          ]
-        : [],
+      url: path,
+      siteName: "FA Media",
+      publishedTime: blog._createdAt,
+      modifiedTime: blog._updatedAt,
+      authors: blog.author ? [blog.author] : undefined,
+      section: blog.category,
+      tags: blog.topics,
+      images,
     },
     twitter: {
       card: "summary_large_image",
       title: blog.title,
       description: blog.excerpt,
-      images: blog.image ? [blog.image] : [],
+      images: blog.image ? [blog.image] : undefined,
     },
   };
 }
@@ -110,7 +136,15 @@ export default async function BlogPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const blog = await client.fetch<BlogPost>(BLOGS_QUERY, await params, options);
+  const blog = await client.fetch<BlogPost | null>(
+    BLOGS_QUERY,
+    await params,
+    options
+  );
+
+  if (!blog) notFound();
+
+  const postUrl = `${SITE_URL}/blogs/${blog.slug}`;
 
   const formatDate = (date: string | Date): string =>
     new Date(date).toLocaleDateString("en-US", {
@@ -137,7 +171,28 @@ export default async function BlogPage({
   };
 
   return (
-    <section className="max-w-6xl mx-auto px-4 md:px-8 pt-30 pb-20 font-inter">
+    <article className="max-w-6xl mx-auto px-4 md:px-8 pt-30 pb-20 font-inter">
+      <JsonLd
+        data={[
+          blogPostingSchema({
+            title: blog.title,
+            description: blog.excerpt,
+            url: postUrl,
+            image: blog.titleImage,
+            datePublished: blog._createdAt,
+            dateModified: blog._updatedAt,
+            author: capitalizeName(blog.author),
+            authorRole: blog.authorRole,
+            category: blog.category,
+            keywords: blog.topics,
+          }),
+          breadcrumbSchema([
+            { name: "Home", url: SITE_URL },
+            { name: "Blog", url: `${SITE_URL}/blogs` },
+            { name: blog.title, url: postUrl },
+          ]),
+        ]}
+      />
       <Link
         href={"/blogs"}
         className="group flex items-center gap-2 text-stone-400 hover:text-stone-200 transition-colors text-sm mb-4"
@@ -150,16 +205,18 @@ export default async function BlogPage({
         <div className="relative z-10 bg-[#1a1a1a] border border-stone-800 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-2xl">
           {/* Blog Header */}
           <div className="border-b border-stone-800 mb-6 pb-4">
-            <h2 className="text-lg sm:text-xl font-normal mb-2 flex items-center gap-2">
+            <h1 className="text-lg sm:text-xl font-normal mb-2 flex items-center gap-2">
               {blog.title}
-            </h2>
+            </h1>
             <p className="text-xs sm:text-sm text-stone-400 mb-3">
               {blog.excerpt}
             </p>
             <div className="flex items-center gap-4 text-xs text-stone-500">
               <span className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
-                {formatDate(blog._createdAt)}
+                <time dateTime={blog._createdAt}>
+                  {formatDate(blog._createdAt)}
+                </time>
               </span>
               <span className="flex items-center gap-1">
                 <Clock className="w-3 h-3" />
@@ -205,7 +262,7 @@ export default async function BlogPage({
                 Topics
               </div>
               <div className="flex items-center gap-2 flex-wrap">
-                {blog.topics.map((topic) => (
+                {(blog.topics ?? []).map((topic) => (
                   <span
                     key={topic}
                     className="text-xs bg-stone-700 hover:bg-stone-600 rounded px-2 py-1 cursor-pointer transition-colors"
@@ -288,6 +345,6 @@ export default async function BlogPage({
           </div>
         </div>
       </div>
-    </section>
+    </article>
   );
 }

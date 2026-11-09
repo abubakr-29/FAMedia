@@ -1,4 +1,14 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description:
+    "How FA Media collects, uses and protects personal information shared through our website, contact forms and services.",
+  alternates: { canonical: "/privacy-policy" },
+  openGraph: { url: "/privacy-policy", title: "Privacy Policy | FA Media" },
+  robots: { index: true, follow: true },
+};
 
 export default function PrivacyPolicy() {
   return (

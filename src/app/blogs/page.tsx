@@ -4,6 +4,9 @@ import { type SanityDocument } from "next-sanity";
 import type { Metadata } from "next";
 import { client } from "@/sanity/client";
 import Image from "next/image";
+import JsonLd from "@/components/seo/JsonLd";
+import { SITE_URL } from "@/lib/site";
+import { breadcrumbSchema } from "@/lib/structured-data";
 
 interface Blogs extends SanityDocument {
   _id: string;
@@ -55,22 +58,33 @@ const CATEGORIES_QUERY = `
 
 const options = { next: { revalidate: 30 } };
 
-export const metadata: Metadata = {
-  title: "FA Media | Engineering & Design Blog",
-  description:
-    "Insights on web development, UI systems, automation, and engineering decisions from the team at FA Media.",
-  alternates: {
-    canonical: "https://famedia.co.in/blogs",
-  },
-  openGraph: {
-    title: "FA Media | Engineering & Design Blog",
-    description:
-      "Deep dives into engineering, UI design, and real-world product decisions from FA Media.",
-    url: "https://famedia.co.in/blogs",
-    siteName: "FA Media",
-    type: "website",
-  },
-};
+const BLOG_TITLE = "Web Development, Design & SEO Blog";
+const BLOG_DESCRIPTION =
+  "Practical insights on web development, Next.js, UI design, SEO, AI chatbots and automation from the FA Media team — for founders and businesses worldwide.";
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string; search?: string }>;
+}): Promise<Metadata> {
+  const { category, search } = await searchParams;
+  // Filtered / search views are thin duplicates of /blogs: keep them out of the index.
+  const isFiltered = Boolean(search?.trim()) || (category && category !== "all");
+
+  return {
+    title: BLOG_TITLE,
+    description: BLOG_DESCRIPTION,
+    alternates: { canonical: "/blogs" },
+    robots: isFiltered ? { index: false, follow: true } : undefined,
+    openGraph: {
+      title: `${BLOG_TITLE} | FA Media`,
+      description: BLOG_DESCRIPTION,
+      url: "/blogs",
+      siteName: "FA Media",
+      type: "website",
+    },
+  };
+}
 
 export default async function IndexPage({
   searchParams,
@@ -114,6 +128,32 @@ export default async function IndexPage({
 
   return (
     <div className="pt-30 pb-20">
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Blog",
+            "@id": `${SITE_URL}/blogs#blog`,
+            name: "FA Media Blog",
+            description: BLOG_DESCRIPTION,
+            url: `${SITE_URL}/blogs`,
+            inLanguage: "en",
+            publisher: { "@id": `${SITE_URL}/#organization` },
+            blogPost: allBlogs.slice(0, 20).map((b) => ({
+              "@type": "BlogPosting",
+              headline: b.title,
+              url: `${SITE_URL}/blogs/${b.slug}`,
+              datePublished: b._createdAt,
+              image: b.titleImage || undefined,
+              author: { "@type": "Person", name: b.author },
+            })),
+          },
+          breadcrumbSchema([
+            { name: "Home", url: SITE_URL },
+            { name: "Blog", url: `${SITE_URL}/blogs` },
+          ]),
+        ]}
+      />
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-8">
         {/* Header Section */}
         <div className="mb-10 pt-8">
@@ -140,6 +180,7 @@ export default async function IndexPage({
               defaultValue={search || ""}
               className="block w-full pl-10 pr-3 py-2 bg-[#1a1a1a] border border-stone-800 rounded-lg leading-5 text-stone-300 placeholder-stone-600 focus:outline-none focus:border-stone-600 focus:ring-1 focus:ring-stone-600 sm:text-sm transition-all duration-200 ease-in-out hover:border-stone-700"
               placeholder="Search blogs..."
+              aria-label="Search blogs"
             />
             {category !== "all" && (
               <input type="hidden" name="category" value={category} />

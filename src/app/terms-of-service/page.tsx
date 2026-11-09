@@ -1,4 +1,14 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description:
+    "The terms and conditions that govern use of the FA Media website and our web design, development and automation services.",
+  alternates: { canonical: "/terms-of-service" },
+  openGraph: { url: "/terms-of-service", title: "Terms of Service | FA Media" },
+  robots: { index: true, follow: true },
+};
 
 export default function TermsOfService() {
   return (
