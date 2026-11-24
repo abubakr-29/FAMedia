@@ -19,27 +19,11 @@ const founders = [
     reverse: false,
   },
   {
-    name: "MD. Mustaffa Aman",
-    role: "Co-Founder & Marketing Strategist",
-    image: "/MustaffaAman_Profile.webp",
-    linkedin: "https://www.instagram.com/aman.mustaffa/",
-    bio: "Aman is the connective tissue between ideas and outcomes. With an instinct for positioning and a natural ability to read rooms and win people over, he drives FA Media's growth strategy, client relationships, and brand narrative — turning vision into momentum.",
-    reverse: true,
-  },
-  {
     name: "Abu Bakr Ahmed",
     role: "Co-Founder & Full Stack Developer",
     image: "/AbuBakrAhmed_Profile.webp",
     linkedin: "https://www.linkedin.com/in/abu-bakr-ahmed-01a9532bb/",
     bio: "Abu Bakr handles the engineering at FA Media. Full stack across React, Node.js, PostgreSQL, and MongoDB — he builds backends that hold and frontends that perform. Quietly expanding into AI/ML on the side.",
-    reverse: false,
-  },
-  {
-    name: "Jason Paul",
-    role: "Client Management Lead",
-    image: "/JasonPaul_Profile.webp",
-    linkedin: "https://www.instagram.com/jason_paul_11/",
-    bio: "Jason is the bridge between FA Media and the people we serve. He keeps projects aligned, understands each client's goals, and ensures every client feels heard and supported — turning strong relationships into lasting partnerships.",
     reverse: true,
   },
 ];
